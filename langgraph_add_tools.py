@@ -1,28 +1,15 @@
-from langchain_core.messages import ToolMessage
 from langchain_tavily import TavilySearch
-import os
-from langchain_openai import ChatOpenAI
 from typing import Annotated, TypedDict
 from langgraph.graph import StateGraph, START
 from langgraph.prebuilt import ToolNode, tools_condition
 from langgraph.graph.message import add_messages
-
-os.environ["TAVILY_API_KEY"] = "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"
-MODEL = "gpt-4o"
-TEMPERATURE = 0.0
-BASE_URL = "https://gpt1.shupremium.com/v1"
-API_KEY = "4eGENK1I1kNtvgiGrKgKJZk1y3eEeVPIJWNAMTeFugIiyht3"
+import config
 
 TOOLS_NODE = "tools"
 CHATBOT_NODE = "chatbot"
 
 
-llm = ChatOpenAI(
-    model=MODEL,
-    temperature=TEMPERATURE,
-    base_url=BASE_URL,
-    api_key=API_KEY,
-)
+llm = config.chat_model
 search_tool = TavilySearch(
     max_results=2,
 )
@@ -85,7 +72,7 @@ graph_builder.add_node(TOOLS_NODE, tool_node)
 #     else:
 #         raise ValueError(f"No messages found in input state to tool_edge: {state}")
 #     if hasattr(ai_message, "tool_calls") and len(ai_message.tool_calls) > 0:
-#         return "tools"
+#         return TOOLS_NODE
 #     return END
 
 
