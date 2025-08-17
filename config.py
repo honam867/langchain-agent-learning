@@ -1,5 +1,6 @@
 import os
 from langchain_openai import ChatOpenAI
+from pathlib import Path
 
 # Model Configuration
 MODEL = "gpt-4o"
@@ -32,3 +33,14 @@ chat_model = ChatOpenAI(
 # Enable LangSmith tracing (call this function to activate)
 # Uncomment the line below once you've set your API key
 setup_langsmith_tracing()
+
+
+def get_graph_png(graph, filename):
+    # Render to PNG bytes
+    png_bytes = graph.get_graph().draw_mermaid_png()
+
+    # Save to project root (the process' current working directory)
+    out_path = Path.cwd() / filename
+    out_path.write_bytes(png_bytes)
+
+    print(f"Saved: {out_path.resolve()}")
