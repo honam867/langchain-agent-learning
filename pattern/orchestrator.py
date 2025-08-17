@@ -1,6 +1,6 @@
 from typing import Annotated, List, TypedDict
 import operator
-
+from langchain_tavily import TavilySearch
 
 import sys
 import os
@@ -27,6 +27,9 @@ class Sections(BaseModel):
 
 planner = chat_model.with_structured_output(Sections)
 
+# Initialize Tavily search tool
+tavily_search = TavilySearch()
+
 
 class State(TypedDict):
     topic: str
@@ -45,11 +48,24 @@ class WorkerState(TypedDict):
 def orchestrator(state: State):
     """Orchestrator that generates a plan for the report"""
 
-    # Generate queries
+    # First, research the topic using Tavily search
+    search_results = tavily_search.invoke({"query": state["topic"]})
+
+    # Extract relevant information from search results
+    # TavilySearch returns a string response, not a list of dictionaries
+    research_context = (
+        search_results if search_results else "No research context available."
+    )
+
+    # Generate plan using research context
     report_sections = planner.invoke(
         [
-            SystemMessage(content="Generate a plan for the report in Vietnamese"),
-            HumanMessage(content=f"Here is the report topic: {state['topic']}"),
+            SystemMessage(
+                content="Generate a plan for the report in Vietnamese. Use the provided research context to create comprehensive and accurate sections."
+            ),
+            HumanMessage(
+                content=f"Here is the report topic: {state['topic']}\n\nResearch context:\n{research_context}"
+            ),
         ]
     )
 
@@ -114,8 +130,10 @@ orchestrator_worker = orchestrator_worker_builder.compile()
 # get_graph_png(orchestrator_worker, "orchestrator.png")
 
 # Invoke
-state = orchestrator_worker.invoke({"topic": "Create a report on Vietnam's history"})
+state = orchestrator_worker.invoke(
+    {"topic": "Create a report on top 5 Trending AI models in 2025"}
+)
 
-from IPython.display import Markdown
-
-Markdown(state["final_report"])
+print("Final Report:")
+print("=" * 50)
+print(state["final_report"])
