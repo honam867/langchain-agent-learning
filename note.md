@@ -2,7 +2,15 @@ _-------_
 " & d:/working/freelance/learning/langchain/.venv/Scripts/Activate.ps1"
 " Select interpreter "
 **def** keyword is used to define a function
+https://excalidraw.com/#json=GUDuovTlyCegUiAFCPClu,D5ciMUb6KmrWKzlpWHMKXA
 
+<!-- TODO -->
+
+read and follow the example: 
+  + https://github.com/langchain-ai/langchain-academy/blob/main/module-2/trim-filter-messages.ipynb
+  + https://langchain-ai.github.io/langgraph/concepts/agentic_concepts/
+  + https://langchain-ai.github.io/langgraph/concepts/multi_agent/#communication-and-state-management
+  + https://langchain-ai.github.io/langgraph/tutorials/rag/langgraph_agentic_rag/#7-assemble-the-graph
 ```python
 def function_name(parameters):
       """Optional docstring explaining the function."""
